@@ -93,8 +93,8 @@ timer_sleep (int64_t ticks)
         return;//休眠0个时间片，无效操作
     ASSERT (intr_get_level () == INTR_ON);//确保当前允许中断
     enum intr_level old_level = intr_disable;//禁止中断
-    thread *current_thread = thread_current ();//取出当前运行的线程
-    current_thread->ticks_blocked = ticks;//赋值，ticks为这个线程需要休眠的时间
+    struct thread *current_thread = thread_current ();//取出当前运行的线程
+    current_thread->sleep_time = ticks;//赋值，ticks为这个线程需要休眠的时间
     thread_block ();//阻塞该线程
     intr_set_level (old_level);//恢复中断标记
 }
@@ -175,7 +175,7 @@ timer_interrupt (struct intr_frame *args UNUSED)
 {
   ticks++;
   thread_tick ();
-  thread_foreach(blocked_thread_check,NULL);
+  thread_foreach(sleep_time_update,NULL);
 }
 
 /* Returns true if LOOPS iterations waits for more than one timer

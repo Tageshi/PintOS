@@ -243,9 +243,9 @@ thread_unblock (struct thread *t)
 }
 
 void sleep_time_update(struct thread* t, void* aux UNUSED) { /*用于更新线程睡眠时间*/
-    if (t->status == THREAD_BLOCKED && time_sleep > 0) {
+    if (t->status == THREAD_BLOCKED && t->time_sleep > 0) {
         t->time_sleep--;
-        if (time_sleep == 0) {
+        if (t->time_sleep == 0) {
             thread_unblock(t); /*如果时间片减为0，线程进入就绪队列。*/
         }
     }
