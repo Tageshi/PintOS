@@ -92,9 +92,9 @@ timer_sleep (int64_t ticks)
     if (ticks <= 0)
         return;//休眠0个时间片，无效操作
     ASSERT (intr_get_level () == INTR_ON);//确保当前允许中断
-    enum intr_level old_level = intr_disable;//禁止中断
+    enum intr_level old_level = intr_disable();//禁止中断
     struct thread *current_thread = thread_current ();//取出当前运行的线程
-    current_thread->sleep_time = ticks;//赋值，ticks为这个线程需要休眠的时间
+    current_thread->time_sleep = ticks;//赋值，ticks为这个线程需要休眠的时间
     thread_block ();//阻塞该线程
     intr_set_level (old_level);//恢复中断标记
 }
