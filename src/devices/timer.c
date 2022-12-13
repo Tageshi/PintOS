@@ -95,8 +95,8 @@ timer_sleep (int64_t ticks)
     enum intr_level old_level = intr_disable();//禁止中断
     struct thread *current_thread = thread_current ();//取出当前运行的线程
     current_thread->time_sleep = ticks;//赋值，ticks为这个线程需要休眠的时间
-    thread_block ();//阻塞该线程
-    intr_set_level (old_level);//恢复中断标记
+    thread_block();//阻塞该线程
+    intr_set_level(old_level);//恢复中断标记
 }
 
 /* Sleeps for approximately MS milliseconds.  Interrupts must be
