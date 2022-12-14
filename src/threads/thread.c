@@ -227,7 +227,11 @@ thread_block (void)
    This function does not preempt the running thread.  This can
    be important: if the caller had disabled interrupts itself,
    it may expect that it can atomically unblock a thread and
-   update other data. */
+   update other data. */ead *t)
+{
+enum intr_level old_level;
+
+ASSERT (is_thread (t));
 void
 thread_unblock (struct thread *t) 
 {
@@ -242,10 +246,10 @@ thread_unblock (struct thread *t)
   intr_set_level (old_level);
 }
 
-void sleep_time_update(struct thread* t, void* aux UNUSED) { /*用于更新线程睡眠时间*/
-    if (t->status == THREAD_BLOCKED && t->time_sleep > 0) {
-        t->time_sleep--;
-        if (t->time_sleep == 0) {
+void blocked_thread_check(struct thread* t, void* aux UNUSED) { /*用于更新线程睡眠时间*/
+    if (t->status == THREAD_BLOCKED && t->ticks_blocked > 0) {
+        t->ticks_blocked--;
+        if (t->ticks_blocked == 0) {
             thread_unblock(t); /*如果时间片减为0，线程进入就绪队列。*/
         }
     }
@@ -472,7 +476,7 @@ init_thread (struct thread *t, const char *name, int priority)
   t->stack = (uint8_t *) t + PGSIZE;
   t->priority = priority;
   t->magic = THREAD_MAGIC;
-
+  t->ticks_blocked=0;  /*初始化阻塞时间为0*/
   old_level = intr_disable ();
   list_push_back (&all_list, &t->allelem);
   intr_set_level (old_level);

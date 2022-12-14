@@ -88,7 +88,7 @@ struct thread
     char name[16];                      /* Name (for debugging purposes). */
     uint8_t *stack;                     /* Saved stack pointer. */
     int priority;                       /* Priority. */
-    int time_sleep;                     /*线程休眠时间*/
+    int ticks_blocked;                  /* 线程休眠时间 */
     struct list_elem allelem;           /* List element for all threads list. */
 
     /* Shared between thread.c and synch.c. */
@@ -119,7 +119,7 @@ tid_t thread_create (const char *name, int priority, thread_func *, void *);
 
 void thread_block (void);
 void thread_unblock (struct thread *);
-void sleep_time_update(struct thread* t, void* aux UNUSED);
+void blocked_thread_check (struct thread *t, void *aux UNUSED);
 
 struct thread *thread_current (void);
 tid_t thread_tid (void);
